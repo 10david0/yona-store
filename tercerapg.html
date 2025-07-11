@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resumen de Compra</title>
+    <link rel="stylesheet" href="style3.css" />
+</head>
+
+<body>
+    <div class="notificacion">
+        <strong>Importante:</strong> No se realizan reembolsos una vez completada la transacción.
+    </div>
+
+    <div class="notificacion" id="detalle-compra"></div>
+    <script src="funciones.js"></script>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const producto = params.get("producto");
+        const precioUSD = parseFloat(params.get("precio"));
+        const id = params.get("id");
+        const nombre = params.get("nombre");
+        const metodo = params.get("metodo");
+
+        const tasaCambio = 106;
+        let precioFormateado = metodo?.toLowerCase() === "pago movil"
+            ? `${precioUSD.toFixed(2)} Bs 🇻🇪`
+            : `$${precioUSD.toFixed(2)}`;
+
+        const mensajeWhatsApp = `Hola, quiero confirmar mi recarga:\nProducto: ${producto}\nPrecio: ${precioFormateado}\nID del jugador: ${id}\nNombre: ${nombre}\nMétodo de pago: ${metodo}`;
+        const linkWhatsApp = `https://wa.me/584125982327?text=${encodeURIComponent(mensajeWhatsApp)}`;
+
+        let correo = "";
+        switch (metodo?.toLowerCase()) {
+            case "paypal":
+                correo = "lf0023692@gmail.com";
+                break;
+            case "zinli":
+                correo = "lf0023692@gmail.com";
+                break;
+            case "binance":
+                correo = "lf0023692@gmail.com";
+                break;
+            default:
+                correo = "";
+        }
+
+        let datosPago = "";
+        if (metodo?.toLowerCase() === "pago movil") {
+            datosPago = `
+        <div style="margin-left: 20px;">
+          <p><strong>Pago Móvil:</strong></p>
+          <p>TLF: 04125982327</p>
+          <p>CI: 31.933.920</p>
+          <p>Banco de Venezuela</p>
+        </div>
+      `;
+        } else if (correo) {
+            datosPago = `<p><strong>Correo para ${metodo}:</strong> <span style="color:#25D366">${correo}</span></p>`;
+        }
+
+        document.getElementById("detalle-compra").innerHTML = `
+      <h2>Resumen de tu Recarga</h2>
+      <p><strong>Producto:</strong> ${producto}</p>
+      <p><strong>Precio:</strong> ${precioFormateado}</p>
+      <p><strong>ID del jugador:</strong> ${id}</p>
+      <p><strong>Nombre:</strong> ${nombre}</p>
+      <p><strong>Método de pago:</strong> ${metodo}</p>
+      ${datosPago}
+      <div style="margin-top: 15px;">Si esta es tu compra, realiza el pago y envía el comprobante</div>
+      <a href="${linkWhatsApp}" target="_blank"
+        style="display: inline-block; padding: 10px 15px; background-color: #25D366; color: white; border-radius: 5px; text-decoration: none; margin-top: 20px;">
+        Enviar mensaje por WhatsApp
+      </a>
+    `;
+    </script>
+</body>
+
+</html>
